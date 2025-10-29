@@ -1,0 +1,39 @@
+name: Build and Upload Artifact
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Pega o código do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Passo 2: Configura a linguagem / ambiente (exemplo Node.js)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Passo 3: Instala dependências
+      - name: Install dependencies
+        run: npm install
+
+      # Passo 4: Faz o build
+      - name: Build project
+        run: npm run build
+
+      # Passo 5: Faz upload do build como artifact
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact
+          path: ./build
