@@ -1,0 +1,42 @@
+name: Build Android APK Online
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Puxar o código do repositório
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Configurar JDK (Java 17)
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3️⃣ Listar arquivos (opcional, ajuda a depurar)
+      - name: List files
+        run: ls -R
+
+      # 4️⃣ Dar permissão de execução para o gradlew
+      - name: Give Gradle wrapper execution permission
+        run: chmod +x ./app/gradlew
+
+      # 5️⃣ Build do APK
+      - name: Build APK
+        run: ./app/gradlew assembleRelease
+
+      # 6️⃣ Upload do APK como artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-app-apk
+          path: app/build/outputs/apk/release/app-release.apk
